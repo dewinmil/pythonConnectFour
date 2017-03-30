@@ -1,7 +1,7 @@
 import sys
 import getopt
 
-class Flags:
+class connectFour:
 	def __init__(self, height=7, width=7, connect=4, save="", load =""):
 		self.height = height
 		self.width = width
@@ -66,7 +66,7 @@ class Flags:
 		if over50 == 1:
 			for i in range(0, self.height): 
 				for k in range(0, 50):
-					sys.stdout.write(board[count+1][i] + " ")
+					sys.stdout.write(board[k][count+i] + " ")
 				sys.stdout.write("\n");
 			sys.stdout.write("\n\ncolumns " + str(count) + " to " + str(count+49))
 			sys.stdout.write("\n\n")
@@ -78,25 +78,85 @@ class Flags:
 		if self.width != 0:
 			for i in range(0, self.height):
 				for j in range(0, self.width):
-					sys.stdout.write(board[count+1][i] + " ")
+					sys.stdout.write(board[j][count+i] + " ")
 				sys.stdout.write("\n");
 			sys.stdout.write("\n\ncolumns " + str(count) + " to " + str(count+49))
 			sys.stdout.write("\n\n")
 		sys.stdout.write("\n\n")
 			
+	def playCol(self, board, colNum, player):
+		
+		if colNum > (self.width -1) or colNum < 0:
+			print "\nError: invalud column number"
+			exit(3)
+		for i in range(0, self.height-1):		
+			if board[colNum][i+1] != "*":
+				if board[colNum][i] != "*":
+					print("\nError: column already full")
+					return	
+				if player == 1:
+					board[colNum][i] = "X"
+					return
+				else:
+					board[colNum][i] = "O"
+					return
+			if i+1 == self.height -1 and board[colNum][i] =="*":
+				if player == 1:
+					board[colNum][i+1] = "X"
+					return
+				else:
+					board[colNum][i+1] = "O"
+					return
 	
-
-
+	def checkHor(self, board, rowNum, player):
+		count = 0
+		if player == 1:
+			player = "X"
+		else:
+			player = "O"
+		for i in range(0, self.width):
+			if board[i][rowNum] == player:
+				count = count + 1
+			else:
+				count = 0
+			if count >= self.connect:
+				return 1
+			
+	def checkVert(self, board, colNum, player):
+		count = 0
+		if player == 1:
+			player = "X"
+		else:
+			player = "O"
+		for i in range(0, self.width):
+			if board[colNum][i] == player:
+				count = count + 1
+			else:
+				count = 0
+			if count >= self.connect:
+				return 1
+		
 
 
 
 
 
 if __name__ == '__main__':
-	flags = Flags();
-	board = [["*" for x in range(flags.height)] for y in range(flags.width)]
-	flags.Display(board)
-
-
-
+	game = connectFour();
+	board = [["*" for x in range(game.height)] for y in range(game.width)]
+	game.Display(board)
+	game.playCol(board, 0, 1)
+	game.Display(board)
+	game.playCol(board, 0, 1)
+	game.Display(board)
+	game.playCol(board, 0, 1)
+	game.Display(board)
+	game.playCol(board, 0, 1)
+	game.Display(board)
+	
+	i = game.checkVert(board, 0, 1);
+	if i == 1:
+		print "winner"
+	else:
+		print "loser"
 
