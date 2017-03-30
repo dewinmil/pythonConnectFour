@@ -174,25 +174,64 @@ class connectFour:
 			else:
 				count = 0
 
+	def checkDiagnalUp(self, board, colNum, rowNum, player):
+		count = 0
+		offset = 0
+		distToEdge = 0
+		startPosx = 0
+		startPosy = 0
+		startIndex = 0
+		maximum = 0
+		
+		if player == 1:
+			player = "X"
+		else:
+			player = "O"	
+			
+		offset = rowNum + colNum
+		startPosy = offset
+
+		if offset > (self.height - 1):
+			offset = offset - (self.height - 1)
+			startPosx = offset
+			startPosy = self.height - 1
+		
+		if (self.width - startPosx) < (self.height - startPosy):
+			maximum = self.width
+		else:
+			maximum = self.height
+		
+		for i in range(0, maximum):
+			if(startPosy + i) < 0 or (startPosx +i) > (self.width -1):
+				break
+			
+			if board[startPosx + i][startPosy - i] == player:
+				count = count + 1
+				if count >= self.connect:
+					return 1
+			else:
+				count = 0
+
+
 
 
 if __name__ == '__main__':
 	game = connectFour();
 	board = [["*" for x in range(game.height)] for y in range(game.width)]
 	game.Display(board)
-	game.playCol(board, 0, 1)
-	game.playCol(board, 0, 1)
-	game.playCol(board, 0, 1)
-	game.playCol(board, 0, 1)
-	game.playCol(board, 1, 1)
-	game.playCol(board, 1, 1)
-	game.playCol(board, 1, 1)
-	game.playCol(board, 2, 1)
-	game.playCol(board, 2, 1)
 	game.playCol(board, 3, 1)
+	game.playCol(board, 3, 1)
+	game.playCol(board, 3, 1)
+	game.playCol(board, 3, 1)
+	game.playCol(board, 2, 1)
+	game.playCol(board, 2, 1)
+	game.playCol(board, 2, 1)
+	game.playCol(board, 1, 1)
+	game.playCol(board, 1, 1)
+	game.playCol(board, 0, 1)
 	game.Display(board)
 	
-	i = game.checkDiagnalDown(board, 3, 6, 1);
+	i = game.checkDiagnalUp(board, 1, 5, 1)
 	if i == 1:
 		print "winner"
 	else:
