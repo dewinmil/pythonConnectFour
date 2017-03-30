@@ -1,5 +1,6 @@
 import sys
 import getopt
+import cPickle as pickle
 
 class connectFour:
 	def __init__(self, height=7, width=7, connect=4, save="", load =""):
@@ -212,12 +213,30 @@ class connectFour:
 			else:
 				count = 0
 
+	def saveGame(self, board, player, filename):
+		savefile = [board, self.width, self.height, self.connect, player]
+		filename = "saveFile/" + filename
+		
+		with open(filename, "wb") as f:
+			pickle.dump(savefile, f)
+		
+		
+	def loadGame(self, filename):
+		
+		filename = "saveFile/" + filename
 
-
+		with open(filename, "rb") as f:
+			loadfile = pickle.load(f)
+		
+		return loadfile
 
 if __name__ == '__main__':
+	player = 1
+
 	game = connectFour();
+
 	board = [["*" for x in range(game.height)] for y in range(game.width)]
+
 	game.Display(board)
 	game.playCol(board, 3, 1)
 	game.playCol(board, 3, 1)
@@ -236,4 +255,10 @@ if __name__ == '__main__':
 		print "winner"
 	else:
 		print "loser"
-
+	
+	loadfile = game.loadGame("save1")
+	board = loadfile[0]
+	game.width = loadfile[1]
+	game.height = loadfile[2]
+	game.connect = loadfile[3]
+	player = loadfile[4]
