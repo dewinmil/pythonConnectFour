@@ -8,8 +8,8 @@ import os
 class connectFour:
 	def __init__(self, height=7, width=7, connect=4, load =""):
 		#Useless lamda statement for credit
-		setter = lambda x: x - 1
-		self.height = setter(height) + 1
+		down1 = lambda x: x - 1
+		self.height = down1(height) + 1
 		self.width = width
 		self.connect = connect
 		self.load = load
