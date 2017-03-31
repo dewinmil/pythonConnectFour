@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 import sys
 import getopt
 import cPickle as pickle
