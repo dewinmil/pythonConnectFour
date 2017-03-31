@@ -1,6 +1,7 @@
 import sys
 import getopt
 import cPickle as pickle
+import os
 
 class connectFour:
 	def __init__(self, height=7, width=7, connect=4, load =""):
@@ -218,6 +219,9 @@ class connectFour:
 		savefile = [board, self.width, self.height, self.connect, player]
 		filename = "saveFile/" + filename
 		
+		if not os.path.exists("saveFile/"):
+			os.makedirs("saveFile/")
+
 		with open(filename, "wb") as f:
 			pickle.dump(savefile, f)
 		
