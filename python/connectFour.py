@@ -137,6 +137,8 @@ class connectFour:
 			player = "X"
 		else:
 			player = "O"
+		
+		#count consecutive cells possessed by the player, return 1 for victory
 		for i in range(0, self.width):
 			if board[i][rowNum] == player:
 				count = count + 1
@@ -152,6 +154,7 @@ class connectFour:
 			player = "X"
 		else:
 			player = "O"
+		#count consecutive cells possessed by the player, return 1 for victory
 		for i in range(0, self.height):
 			if board[colNum][i] == player:
 				count = count + 1
@@ -175,7 +178,8 @@ class connectFour:
 		else:
 			player = "O"	
 		
-		#determin offset of rows or columns
+		#set offset to whichever is closer to the top or left edges
+		#set our starting x or y position (one of thse will remain 0).
 		if colNum <= rowNum:
 			offset = colNum
 			startPosy = rowNum - offset
@@ -183,14 +187,16 @@ class connectFour:
 			offset = rowNum
 			startPosx = colNum - offset
 
+		#find out how far we can loop
 		if (self.width - startPosx) < (self.height - startPosy):
 			maximum = self.width
 		else:
 			maximum = self.height
-
+		#loop along remaining width or height
 		for i in range(0, maximum):
 			if (startPosy + i) > (self.height  - 1) or (startPosx + i) > (self.width -1):
 				break
+			#count consecutive cells possessed by the player, return 1 for victory
 			if board[startPosx +i][startPosy + i] == player:
 				count = count + 1
 				if count >= self.connect:
@@ -206,7 +212,8 @@ class connectFour:
 		startPosy = 0
 		startIndex = 0
 		maximum = 0
-	
+		
+		#set player to it's board object	
 		if player == 1:
 			player = "X"
 		else:
@@ -214,21 +221,25 @@ class connectFour:
 			
 		offset = rowNum + colNum
 		startPosy = offset
-
+		
+		#if out starting y value is greater than the height of the board then
+		#set the starting x value to the extra
 		if offset > (self.height - 1):
 			offset = offset - (self.height - 1)
 			startPosx = offset
 			startPosy = self.height - 1
 		
+		#find how far we can loop
 		if (self.width - startPosx) < (self.height - startPosy):
 			maximum = self.width
 		else:
 			maximum = self.height
 		
 		for i in range(0, maximum):
+			#catch if out of bounds
 			if(startPosy + i) < 0 or (startPosx +i) > (self.width -1):
 				break
-			
+			#count consecutive cells possessed by the player and return 1 for victory
 			if board[startPosx + i][startPosy - i] == player:
 				count = count + 1
 				if count >= self.connect:
@@ -237,25 +248,33 @@ class connectFour:
 				count = 0
 
 	def saveGame(self, board, player, filename):
+		#create object to be saved
 		savefile = [board, self.width, self.height, self.connect, player]
+		
+		#path to the save file directory
 		filename = "saveFile/" + filename
 		
+		#if the save file directory doesn't exist, make it.
 		if not os.path.exists("saveFile/"):
 			os.makedirs("saveFile/")
-
+		
+		#save to the save file
 		with open(filename, "wb") as f:
 			pickle.dump(savefile, f)
 		
 		
 	def loadGame(self, filename):
 		
+		#oath to the save file directory
 		filename = "saveFile/" + filename
-
+		
+		#load to loadfile
 		with open(filename, "rb") as f:
 			loadfile = pickle.load(f)
 		
 		return loadfile
 	
+	#used to determine if user input is a number
 	def isNumber(self, num):
 		try:
 			int(num)
@@ -264,10 +283,12 @@ class connectFour:
 			return False;
 
 if __name__ == '__main__':
+	#create a game, a board and a player
 	game = connectFour()
 	board = [["*" for x in range(game.height)] for y in range(game.width)]
 	player = 1	
 	
+	#for if some1 used -l or --load on launch
 	if game.load != "":
 		loadfile = game.loadGame(game.load)
 		board = loadfile[0]
@@ -276,6 +297,7 @@ if __name__ == '__main__':
 		game.connect = loadfile[3]
 		player = loadfile[4]
 	
+	#sets disp so that we will display our board immediately after loop
 	disp = 1
 	while(1):
 		if(disp == 1):
@@ -289,7 +311,8 @@ if __name__ == '__main__':
 		if len(userInput) == 0:
 			disp = 0
 			continue	
-				
+
+		#exit call		
 		if userInput[0] == "exit":
 			if len(userInput) == 1:
 				break
@@ -298,6 +321,7 @@ if __name__ == '__main__':
 				disp = 0
 				continue
 
+		#print off help statement
 		if userInput[0] == "help":
 			if len(userInput) == 1:
 				print "-Enter column number to play that column."
@@ -312,17 +336,21 @@ if __name__ == '__main__':
 				print " terminal"
 			else:
 				print "Error: Invalid Input"
+			#prevent board from reprinting after command executes
 			disp = 0
 			continue
-		
+	
+		#reprint board	
 		if userInput[0] == "display":
 			if len(userInput) == 1:
 				game.display(board)
 			else:
 				print "Error: Invalid Input"
+			#prevent board from reprinting after command executes
 			disp = 0
 			continue
 		
+		#save call
 		if userInput[0] == "save":
 			if len(userInput) == 2:
 				game.saveGame(board, player, userInput[1])	
@@ -331,6 +359,7 @@ if __name__ == '__main__':
 			disp = 0
 			continue
 		
+		#load call
 		if userInput[0] == "load":
 			if len(userInput) == 2:
 				loadfile = game.loadGame(userInput[1])
@@ -348,39 +377,47 @@ if __name__ == '__main__':
 				print "Error: Invalid Input"
 				disp = 0
 		
+		#check if the user input a number
 		if game.isNumber(userInput[0]):
 			if len(userInput) == 1:
 				results = game.playCol(board, userInput[0], player)
 				if len(results) != 2:
+					#playCol will have thrown an error
+					#prevent board from reprinting	
 					disp = 0
 					continue
 				col = results[0]
 				row = results[1]
-
+				
+				#check horizontal victory
 				checkwin = game.checkHor(board, row, player)
 				if checkwin == 1:
 					game.display(board)
 					print "Player " + str(player) + " Wins!"
 					break 
 				
+				#check vertical victory
 				checkwin = game.checkVert(board, col, player)
 				if checkwin == 1:
 					game.display(board)
 					print "Player " + str(player) + " Wins!"
 					break 
 				
+				#check diagnal up victory
 				checkwin = game.checkDiagnalUp(board, col, row, player)
 				if checkwin == 1:
 					game.display(board)
 					print "Player " + str(player) + " Wins!"
 					break 
 				
+				#check diagnal down victory
 				checkwin = game.checkDiagnalDown(board, col, row, player)
 				if checkwin == 1:
 					game.display(board)
 					print "Player " + str(player) + " Wins!"
 					break
-				
+			
+				#change player	
 				if player == 1:
 					player = 2
 				else:
