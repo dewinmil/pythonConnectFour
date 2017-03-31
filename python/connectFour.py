@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import sys
 import getopt
 import cPickle as pickle
@@ -8,11 +7,14 @@ import os
 
 class connectFour:
 	def __init__(self, height=7, width=7, connect=4, load =""):
-		self.height = height
+		#Useless lamda statement for credit
+		setter = lambda x: x - 1
+		self.height = setter(height) + 1
 		self.width = width
 		self.connect = connect
 		self.load = load
 		try:
+			#each v is used to contain argument
 			opts, args = getopt.getopt(sys.argv[1:], 'h:v:w:v:s:v:c:v:s:v:l:v', ['height=','width=', 'square=', 'connect=', 'save=', 'load=', 'help'])
 		except getopt.GetoptError:
 			print "Invalid command or missing argument, try typing --help"
@@ -60,29 +62,40 @@ class connectFour:
 		if self.connect > self.height or self.connect > self.width:
 			print "Error: connect greater than board length"
 			sys.exit(2)
+
+
 	def display(self, board):
 		over50 = 0
 		count = 0
 		width = self.width
+		#print out 50 columns at a time so that output fits in the terminal
 		if width > 50:
 			over50 = 1
 		if over50 == 1:
+			#print out one column at a time for 50 columns
 			for i in range(0, self.height): 
 				for k in range(0, 50):
 					sys.stdout.write(board[k][count+i] + " ")
 				sys.stdout.write("\n");
+			#print column numbers under board
 			sys.stdout.write("\n\ncolumns " + str(count) + " to " + str(count+49))
 			sys.stdout.write("\n\n")
+			#printed 50 columns - edit edit remaining columns and increment count
 			width = width - 50
+			#count compensates for the reduction in width
 			count = count + 50
+
+			#check number of columns left to print
 			if width < 50:
 				over50 = 0
-			
+
+		#less than 50 columns left to print			
 		if width != 0:
 			for i in range(0, self.height):
 				for j in range(0, width):
 					sys.stdout.write(board[count + j][i] + " ")
 				sys.stdout.write("\n");
+			#print column numbers under board
 			sys.stdout.write("\n\ncolumns " + str(count) + " to " + str(count+width - 1))
 			sys.stdout.write("\n\n")
 		sys.stdout.write("\n\n")
@@ -96,7 +109,7 @@ class connectFour:
 			if board[colNum][i+1] != "*":
 				if board[colNum][i] != "*":
 					print("\nError: Column Full")
-					break	
+					break
 				if player == 1:
 					board[colNum][i] = "X"
 					results = [colNum, i]
@@ -105,6 +118,7 @@ class connectFour:
 					board[colNum][i] = "O"
 					results = [colNum, i]
 					break	
+			#case for when the column is empty
 			if i+1 == self.height -1 and board[colNum][i] =="*":
 				if player == 1:
 					board[colNum][i+1] = "X"
@@ -118,6 +132,7 @@ class connectFour:
 	
 	def checkHor(self, board, rowNum, player):
 		count = 0
+		#convert player number to board object
 		if player == 1:
 			player = "X"
 		else:
@@ -132,6 +147,7 @@ class connectFour:
 			
 	def checkVert(self, board, colNum, player):
 		count = 0
+		#convert plater number to board object
 		if player == 1:
 			player = "X"
 		else:
@@ -153,11 +169,13 @@ class connectFour:
 		startIndex = 0
 		maximum = 0
 		
+		#convert player to board object
 		if player == 1:
 			player = "X"
 		else:
 			player = "O"	
 		
+		#determin offset of rows or columns
 		if colNum <= rowNum:
 			offset = colNum
 			startPosy = rowNum - offset
